@@ -1,10 +1,9 @@
 import java.io.File
 
-fun String.writeToFile(filename: String, isDeleteOnExit: Boolean = true): File {
+fun String.writeToFile(filename: String): File {
     val file = File(filename)
     if (file.exists()) file.delete()
     file.writeText(this)
-    if (isDeleteOnExit) file.deleteOnExit()
 
     return file
 }

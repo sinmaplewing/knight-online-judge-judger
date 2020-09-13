@@ -1,11 +1,9 @@
-import kotlin.Exception
-
 const val KOTLIN_CODE_FILENAME = "_code.kt"
 const val KOTLIN_CODE_EXECUTABLE_FILENAME = "_code.jar"
 
 class KotlinCompiler: ICompiler {
     override fun compile(code: String): String {
-        code.writeToFile(KOTLIN_CODE_FILENAME)
+        val codeFile = code.writeToFile(KOTLIN_CODE_FILENAME)
 
         val compileProcess = ProcessBuilder(
             "kotlinc",
@@ -15,6 +13,7 @@ class KotlinCompiler: ICompiler {
             KOTLIN_CODE_EXECUTABLE_FILENAME)
         compileProcess.start().waitFor()
 
+        codeFile.delete()
         return KOTLIN_CODE_EXECUTABLE_FILENAME
     }
 }

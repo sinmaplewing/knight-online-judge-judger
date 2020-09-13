@@ -17,6 +17,8 @@ class JVMExecutor: IExecutor {
         executeProcess.start().waitFor()
 
         val output = outputFile.readText()
+
+        inputFile.delete()
         outputFile.delete()
         return output
     }
