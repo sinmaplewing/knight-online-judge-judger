@@ -14,7 +14,7 @@ class DatabaseSubmissionSource: ISubmissionSource {
         Database.connect(dataSource)
 
         transaction {
-            SchemaUtils.create(ProblemTable, TestCaseTable,  SubmissionTable)
+            SchemaUtils.create(ProblemTable, TestCaseTable, SubmissionTable)
         }
     }
 

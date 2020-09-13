@@ -3,7 +3,7 @@ fun main() {
     val a = inputs[0].toInt()
     val b = inputs[1].toInt()
     val c = inputs[2].toInt()
-    val sum = a + b - c
+    val sum = a + b + c
 
-    println(sum.toString())
+    println("${sum.toString()}")
 }
