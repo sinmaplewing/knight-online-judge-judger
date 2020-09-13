@@ -27,7 +27,7 @@ class FileSubmissionSource: ISubmissionSource {
         )
     }
 
-    override fun setResult(id: Int, result: Judger.Result) {
-        println("Submission $id: $result")
+    override fun setResult(id: Int, result: Judger.Result, executedTime: Double) {
+        println("Submission $id: $result ($executedTime)")
     }
 }

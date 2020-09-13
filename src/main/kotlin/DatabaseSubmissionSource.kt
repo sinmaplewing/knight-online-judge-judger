@@ -48,15 +48,16 @@ class DatabaseSubmissionSource: ISubmissionSource {
         return submissionData
     }
 
-    override fun setResult(id: Int, result: Judger.Result) {
+    override fun setResult(id: Int, result: Judger.Result, executedTime: Double) {
         transaction {
             SubmissionTable.update({
                 SubmissionTable.id.eq(id)
             }) {
                 it[SubmissionTable.result] = result.toString()
+                it[SubmissionTable.executedTime] = executedTime
             }
         }
 
-        println("Submission $id: $result")
+        println("Submission $id: $result ($executedTime)")
     }
 }

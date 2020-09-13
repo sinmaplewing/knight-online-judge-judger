@@ -1,13 +1,13 @@
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-const val KOTLIN_INPUT_FILENAME = "input.txt"
-const val KOTLIN_OUTPUT_FILENAME = "output.txt"
+const val JVM_INPUT_FILENAME = "input.txt"
+const val JVM_OUTPUT_FILENAME = "output.txt"
 
 class JVMExecutor: IExecutor {
     override fun execute(executableFilename: String, input: String, timeOutSeconds: Double): IExecutor.Result {
-        val inputFile = input.writeToFile(KOTLIN_INPUT_FILENAME)
-        val outputFile = File(KOTLIN_OUTPUT_FILENAME)
+        val inputFile = input.writeToFile(JVM_INPUT_FILENAME)
+        val outputFile = File(JVM_OUTPUT_FILENAME)
 
         val startTime = System.currentTimeMillis()
         val executeProcess = ProcessBuilder(
@@ -33,6 +33,7 @@ class JVMExecutor: IExecutor {
         return IExecutor.Result(
             !isFinished,
             isCorrupted,
+            executedTime.toDouble() / 1000.0,
             output
         )
     }
