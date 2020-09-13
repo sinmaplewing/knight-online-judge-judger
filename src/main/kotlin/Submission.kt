@@ -8,5 +8,4 @@ object SubmissionTable: Table() {
     val result = varchar("Result", 255)
 
     val problemId = integer("ProblemId") references ProblemTable.id
-    val userId = integer("UserId") references UserTable.id
 }
