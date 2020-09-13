@@ -36,14 +36,14 @@ class Judger(val compiler: ICompiler, val executor: IExecutor) {
                 result = executor.execute(executableFilename, testCase.input, testCase.timeOutSeconds)
             }
             catch (e: Exception) {
+                println(e)
                 return ResultWithTime(Result.RuntimeError, totalExecutedTime)
             }
 
             if (result == null) return ResultWithTime(Result.RuntimeError, totalExecutedTime)
             if (result.isTimeOut) return ResultWithTime(Result.TimeLimitExceeded, totalExecutedTime)
             if (result.isCorrupted) return ResultWithTime(Result.RuntimeError, totalExecutedTime)
-
-            val output = result.output.trim()
+            val output = result.output?.trim() ?: return ResultWithTime(Result.RuntimeError, totalExecutedTime)
             val expectedOutput = testCase.expectedOutput.trim()
             if (output != expectedOutput) {
                 isCorrect = false

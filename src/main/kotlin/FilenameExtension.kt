@@ -9,3 +9,7 @@ fun String.writeToFile(filename: String): File {
 }
 
 fun String.deleteFile() = File(this).delete()
+
+fun String.appendPath(nextSegment: String) =
+    if (this.endsWith('/')) this + nextSegment
+        else "$this/$nextSegment"
