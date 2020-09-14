@@ -1,5 +1,5 @@
 fun main() {
-    val submissionSource: ISubmissionSource = DatabaseSubmissionSource() // FileSubmissionSource()
+    val submissionSource: ISubmissionSource = DatabaseSubmissionSource // FileSubmissionSource()
 
     while (true) {
         var submission = submissionSource.getNextSubmissionData()
@@ -11,6 +11,6 @@ fun main() {
             submission = submissionSource.getNextSubmissionData()
         }
 
-        Thread.sleep(1000)
+        Thread.sleep(5000)
     }
 }
