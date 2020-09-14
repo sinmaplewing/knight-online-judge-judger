@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-class DatabaseSubmissionSource: ISubmissionSource {
+object DatabaseSubmissionSource: ISubmissionSource {
     init {
         val config = HikariConfig("/hikari.properties")
         config.schema = "public"
