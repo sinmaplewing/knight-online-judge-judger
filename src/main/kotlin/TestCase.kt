@@ -4,6 +4,7 @@ object TestCaseTable : Table() {
     val id = integer("TestCaseId").autoIncrement().primaryKey()
     val input = text("TestInput")
     val expectedOutput = text("ExpectedOutput")
+    val score = integer("Score")
     val timeOutSeconds = double("TimeOutSeconds")
 
     val problemId = integer("ProblemId") references ProblemTable.id

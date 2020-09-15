@@ -22,12 +22,13 @@ class FileSubmissionSource: ISubmissionSource {
             listOf(TestCaseData(
                 inputFile.readText(),
                 outputFile.readText(),
+                100,
                 10.0
             ))
         )
     }
 
-    override fun setResult(id: Int, result: Judger.Result, executedTime: Double) {
-        println("Submission $id: $result ($executedTime)")
+    override fun setResult(id: Int, result: Judger.Result, executedTime: Double, score: Int) {
+        println("Submission $id: $result - Score: $score ($executedTime)")
     }
 }

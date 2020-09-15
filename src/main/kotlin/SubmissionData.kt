@@ -8,5 +8,6 @@ data class SubmissionData (
 data class TestCaseData (
    val input: String,
    val expectedOutput: String,
+   val score: Int,
    val timeOutSeconds: Double
 )

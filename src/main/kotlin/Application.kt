@@ -6,8 +6,8 @@ fun main() {
         while (submission != null) {
             val judger = Judger(KotlinCompiler(), JVMExecutor())
 
-            val resultWithTime = judger.judge(submission)
-            submissionSource.setResult(submission.id, resultWithTime.result, resultWithTime.executedTime)
+            val resultState = judger.judge(submission)
+            submissionSource.setResult(submission.id, resultState.result, resultState.executedTime, resultState.totalScore)
             submission = submissionSource.getNextSubmissionData()
         }
 

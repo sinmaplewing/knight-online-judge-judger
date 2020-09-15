@@ -32,6 +32,7 @@ object DatabaseSubmissionSource: ISubmissionSource {
                     TestCaseData(
                         it[TestCaseTable.input],
                         it[TestCaseTable.expectedOutput],
+                        it[TestCaseTable.score],
                         it[TestCaseTable.timeOutSeconds]
                     )
                 }
@@ -48,16 +49,16 @@ object DatabaseSubmissionSource: ISubmissionSource {
         return submissionData
     }
 
-    override fun setResult(id: Int, result: Judger.Result, executedTime: Double) {
+    override fun setResult(id: Int, result: Judger.Result, executedTime: Double, score: Int) {
         transaction {
             SubmissionTable.update({
                 SubmissionTable.id.eq(id)
             }) {
-                it[SubmissionTable.result] = result.toString()
+                it[SubmissionTable.result] = "$result ($score)"
                 it[SubmissionTable.executedTime] = executedTime
             }
         }
 
-        println("Submission $id: $result ($executedTime)")
+        println("Submission $id: $result - Score: $score ($executedTime)")
     }
 }
