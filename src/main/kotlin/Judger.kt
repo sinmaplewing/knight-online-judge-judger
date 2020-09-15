@@ -45,7 +45,7 @@ class Judger(val compiler: ICompiler, val executor: IExecutor) {
             if (result.isTimeOut) return ResultState(Result.TimeLimitExceeded, NO_EXECUTED_TIME, NO_SCORE)
             if (result.isCorrupted) return ResultState(Result.RuntimeError, NO_EXECUTED_TIME, NO_SCORE)
 
-            val output = result.output.trim()
+            val output = result.output?.trim() ?: return ResultState(Result.RuntimeError, NO_EXECUTED_TIME, NO_SCORE)
             val expectedOutput = testCase.expectedOutput.trim()
             if (output == expectedOutput) {
                 totalScore += testCase.score
