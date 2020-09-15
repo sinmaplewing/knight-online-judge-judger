@@ -15,4 +15,6 @@ dependencies {
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.jetbrains.exposed:exposed:0.17.7")
     implementation("org.postgresql:postgresql:42.2.16")
+    implementation("redis.clients:jedis:3.3.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.+")
 }

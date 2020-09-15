@@ -1,12 +1,17 @@
+import com.fasterxml.jackson.module.kotlin.*
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import redis.clients.jedis.Jedis
+
+const val SUPPORTED_LANGUAGE = "kotlin"
 
 object DatabaseSubmissionSource: ISubmissionSource {
+    val jedis: Jedis
+
     init {
         val config = HikariConfig("/hikari.properties")
         config.schema = "public"
@@ -16,37 +21,16 @@ object DatabaseSubmissionSource: ISubmissionSource {
         transaction {
             SchemaUtils.create(ProblemTable, TestCaseTable, SubmissionTable)
         }
+
+        jedis = Jedis()
     }
 
     override fun getNextSubmissionData(): SubmissionData? {
-        var submissionData: SubmissionData? = null
-        transaction {
-            val submission = SubmissionTable.select {
-                SubmissionTable.result.eq("-")
-            }.firstOrNull()
+        val isDataAvailable = jedis.exists(SUPPORTED_LANGUAGE)
+        if (!isDataAvailable) return null
 
-            if (submission != null) {
-                val testCases = TestCaseTable.select {
-                    TestCaseTable.problemId.eq(submission[SubmissionTable.problemId])
-                }.map {
-                    TestCaseData(
-                        it[TestCaseTable.input],
-                        it[TestCaseTable.expectedOutput],
-                        it[TestCaseTable.score],
-                        it[TestCaseTable.timeOutSeconds]
-                    )
-                }
-
-                submissionData = SubmissionData(
-                    submission[SubmissionTable.id],
-                    submission[SubmissionTable.language],
-                    submission[SubmissionTable.code],
-                    testCases
-                )
-            }
-        }
-
-        return submissionData
+        val data = jedis.lpop(SUPPORTED_LANGUAGE)
+        return jacksonObjectMapper().readValue(data)
     }
 
     override fun setResult(id: Int, result: Judger.Result, executedTime: Double, score: Int) {
