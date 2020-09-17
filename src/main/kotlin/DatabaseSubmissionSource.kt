@@ -6,11 +6,12 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import redis.clients.jedis.Jedis
+import java.lang.Exception
 
 const val SUPPORTED_LANGUAGE = "kotlin"
 
 object DatabaseSubmissionSource: ISubmissionSource {
-    val jedis: Jedis
+    var jedis: Jedis?
 
     init {
         val config = HikariConfig("/hikari.properties")
@@ -26,11 +27,23 @@ object DatabaseSubmissionSource: ISubmissionSource {
     }
 
     override fun getNextSubmissionData(): SubmissionData? {
-        val isDataAvailable = jedis.exists(SUPPORTED_LANGUAGE)
-        if (!isDataAvailable) return null
+        try {
+            jedis = jedis.getConnection()
+            if (jedis == null) return null
 
-        val data = jedis.lpop(SUPPORTED_LANGUAGE)
-        return jacksonObjectMapper().readValue(data)
+            val currentJedisConnection = jedis!!
+            val isDataAvailable = currentJedisConnection.exists(SUPPORTED_LANGUAGE)
+            if (!isDataAvailable) return null
+
+            val data = currentJedisConnection.lpop(SUPPORTED_LANGUAGE)
+            return jacksonObjectMapper().readValue(data)
+        }
+        catch(e: Exception) {
+            jedis?.disconnect()
+            jedis == null
+            println(e)
+            return null
+        }
     }
 
     override fun setResult(id: Int, result: Judger.Result, executedTime: Double, score: Int) {

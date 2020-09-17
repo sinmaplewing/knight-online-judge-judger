@@ -16,7 +16,6 @@ class JVMExecutor(val workspace: String): IExecutor {
         val inputFilePath = workspace.appendPath(JVM_INPUT_FILENAME)
         val outputFilePath = workspace.appendPath(JVM_OUTPUT_FILENAME)
         val inputFile = input.writeToFile(inputFilePath)
-        val outputFile = File(outputFilePath)
 
         val startTime = System.currentTimeMillis()
         val executeProcess = ProcessBuilder(
@@ -46,8 +45,9 @@ class JVMExecutor(val workspace: String): IExecutor {
         val isCorrupted = process.exitValue() != 0
         val executedTime = System.currentTimeMillis() - startTime
 
+        val outputFile = File(outputFilePath)
         var output: String? = null
-        if (isFinished && !isCorrupted) {
+        if (outputFile.exists()) {
             output = outputFile.readText()
         }
         inputFile.delete()
