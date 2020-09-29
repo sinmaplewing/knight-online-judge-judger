@@ -1,6 +1,6 @@
 data class SubmissionData (
     val id: Int,
-    val langauge: String,
+    val language: String,
     val code: String,
     val testCases: List<TestCaseData>
 )

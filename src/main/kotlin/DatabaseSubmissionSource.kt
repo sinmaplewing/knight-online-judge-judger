@@ -8,9 +8,8 @@ import org.jetbrains.exposed.sql.update
 import redis.clients.jedis.Jedis
 import java.lang.Exception
 
-const val SUPPORTED_LANGUAGE = "kotlin"
-
 object DatabaseSubmissionSource: ISubmissionSource {
+    private val supportedLanguages = listOf("kotlin", "c", "java", "python")
     var jedis: Jedis?
 
     init {
@@ -32,11 +31,13 @@ object DatabaseSubmissionSource: ISubmissionSource {
             if (jedis == null) return null
 
             val currentJedisConnection = jedis!!
-            val isDataAvailable = currentJedisConnection.exists(SUPPORTED_LANGUAGE)
-            if (!isDataAvailable) return null
+            for (language in supportedLanguages) {
+                val isDataAvailable = currentJedisConnection.exists(language)
+                if (!isDataAvailable) continue
 
-            val data = currentJedisConnection.lpop(SUPPORTED_LANGUAGE)
-            return jacksonObjectMapper().readValue(data)
+                val data = currentJedisConnection.lpop(language)
+                return jacksonObjectMapper().readValue(data)
+            }
         }
         catch(e: Exception) {
             jedis?.disconnect()
@@ -44,6 +45,8 @@ object DatabaseSubmissionSource: ISubmissionSource {
             println(e)
             return null
         }
+
+        return null
     }
 
     override fun setResult(id: Int, result: Judger.Result, executedTime: Double, score: Int) {

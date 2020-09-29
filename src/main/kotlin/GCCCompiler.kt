@@ -2,17 +2,17 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-private const val KOTLIN_CODE_FILENAME = "_code.kt"
-private const val KOTLIN_CODE_EXECUTABLE_FILENAME = "_code.jar"
+private const val GCC_CODE_FILENAME = "_code.c"
+private const val GCC_CODE_EXECUTABLE_FILENAME = "_code"
 
-class KotlinCompiler(val workspace: String): ICompiler {
+class GCCCompiler(val workspace: String): ICompiler {
     init {
         Files.createDirectories(Paths.get(workspace))
     }
 
     override fun compile(code: String): String {
-        val codeFilePath = workspace.appendPath(KOTLIN_CODE_FILENAME)
-        val executableFilePath = workspace.appendPath(KOTLIN_CODE_EXECUTABLE_FILENAME)
+        val codeFilePath = workspace.appendPath(GCC_CODE_FILENAME)
+        val executableFilePath = workspace.appendPath(GCC_CODE_EXECUTABLE_FILENAME)
         val codeFile = code.writeToFile(codeFilePath)
 
         val compileProcess = ProcessBuilder(
@@ -21,11 +21,10 @@ class KotlinCompiler(val workspace: String): ICompiler {
             "--rm",
             "-v",
             "${System.getProperty("user.dir").appendPath(workspace)}:/$workspace",
-            "zenika/kotlin",
-            "kotlinc",
+            "gcc",
+            "gcc",
             "/$codeFilePath",
-            "-include-runtime",
-            "-d",
+            "-o",
             "/$executableFilePath")
         compileProcess.redirectError(ProcessBuilder.Redirect.INHERIT)
         compileProcess.start().waitFor()
